@@ -4,4 +4,6 @@
 
 This code is for our paper "VTGAN: Semi-supervised Retinal Image Synthesis and Disease Prediction usingVision Transformers"
 
+![](img1.png)
+
 ## Work in Progress
