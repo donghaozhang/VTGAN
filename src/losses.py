@@ -1,3 +1,8 @@
+from keras.layers import Input, Concatenate
+from keras.models import Model
+import keras.backend as K
+from keras.applications.vgg19 import VGG19,preprocess_input
+
 def hinge_loss_discriminator(y_true,y_pred):
     real_loss = K.mean(K.relu(1.0 - y_true))
     fake_loss = K.mean(K.relu(1.0 + y_pred))
