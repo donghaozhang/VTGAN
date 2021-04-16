@@ -61,16 +61,7 @@ def perceptual_loss_coarse(y_true, y_pred):
     for i in range(len(vgg_x)):
         perceptual_loss += perceptual_weights[i] * K.mean(K.square(vgg_x[i] - vgg_y[i]))
     return perceptual_loss
-  
-def feature_matching_loss(y_true, fake_samples, image_input, real_samples, D):
-    y_fake = D([image_input, fake_samples])[1:]
-    y_real = D([image_input, real_samples])[1:]
-
-    fm_loss = 0
-    for i in range(len(y_fake)):
-        fm_loss += K.mean(K.abs(y_fake[i] - y_real[i]))
-    return fm_loss
-
+ 
 def fm_loss(y_true, y_pred):
     fm_loss = 0
     for i in range(len(y_true)):
