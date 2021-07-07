@@ -9,17 +9,17 @@ This code is for our paper "VTGAN: Semi-supervised Retinal Image Synthesis and D
 
 ### Arxiv Pre-print
 ```
-https://arxiv.org/abs/2007.09191
+https://arxiv.org/abs/2104.06757
 ```
 # Citation 
 ```
 @misc{kamran2021vtgan,
-      title={VTGAN: Semi-supervised Retinal Image Synthesis and Disease Prediction using Vision Transformers}, 
-      author={Sharif Amit Kamran and Khondker Fariha Hossain and Alireza Tavakkoli and Stewart Lee Zuckerbrod and Kenton M. Sanders and Salah A. Baker},
-      year={2021},
-      eprint={2104.06757},
-      archivePrefix={arXiv},
-      primaryClass={eess.IV}
+    title={VTGAN: Semi-supervised Retinal Image Synthesis and Disease Prediction using Vision Transformers},
+    author={Sharif Amit Kamran and Khondker Fariha Hossain and Alireza Tavakkoli and Stewart Lee Zuckerbrod and Salah A. Baker},
+    year={2021},
+    eprint={2104.06757},
+    archivePrefix={arXiv},
+    primaryClass={eess.IV}
 }
 ```
 
