@@ -67,8 +67,8 @@ def perceptual_loss_coarse(y_true, y_pred):
         perceptual_loss += perceptual_weights[i] * K.mean(K.square(vgg_x[i] - vgg_y[i]))
     return perceptual_loss
  
-def fm_loss(y_true, y_pred):
-    fm_loss = 0
+def ef_loss(y_true, y_pred):
+    ef_loss = 0
     for i in range(len(y_true)):
-        fm_loss += K.mean(K.abs(y_true[i] - y_pred[i]))
-    return fm_loss
+        ef_loss += K.mean(K.abs(y_true[i] - y_pred[i]))
+    return ef_loss
