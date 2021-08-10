@@ -11,7 +11,7 @@ This code is for our paper "VTGAN: Semi-supervised Retinal Image Synthesis and D
 ```
 https://arxiv.org/abs/2104.06757
 ```
-# Citation (Please wait for the camera-ready version of the reference for citing the artcile)
+# Citation (Please wait for the published version of the reference for citing the article)
 ```
 @misc{kamran2021vtgan,
     title={VTGAN: Semi-supervised Retinal Image Synthesis and Disease Prediction using Vision Transformers},
