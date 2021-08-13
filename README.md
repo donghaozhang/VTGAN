@@ -1,4 +1,4 @@
-# VTGAN (Accepted to ICCV Workshop 2021)
+# VTGAN (Accepted to ICCV 2021 Workshop)
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/vtgan-semi-supervised-retinal-image-synthesis/fundus-to-angiography-generation-on-fundus)](https://paperswithcode.com/sota/fundus-to-angiography-generation-on-fundus?p=vtgan-semi-supervised-retinal-image-synthesis)
 
