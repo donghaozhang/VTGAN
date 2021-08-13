@@ -261,6 +261,6 @@ def create_vit_classifier(input_shape_fundus=(512, 512, 3),input_shape_angio= (5
     out_class = Activation('softmax',name='class')(classses)
     # Create the Keras model.
     model = Model(inputs=[X_input_fundus,X_input_angio], outputs=[out_hinge,out_class,feat],name=name)
-    model.compile(loss=['mse','categorical_crossentropy',fm_loss], optimizer=Adam(lr=0.0002, beta_1=0.5, beta_2=0.999))
+    model.compile(loss=['mse','categorical_crossentropy',ef_loss], optimizer=Adam(lr=0.0002, beta_1=0.5, beta_2=0.999))
     model.summary()
     return model
