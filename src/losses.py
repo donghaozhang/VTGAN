@@ -3,14 +3,7 @@ from keras.models import Model
 import keras.backend as K
 from keras.applications.vgg19 import VGG19,preprocess_input
 
-def hinge_loss_discriminator(y_true,y_pred):
-    real_loss = K.mean(K.relu(1.0 - y_true))
-    fake_loss = K.mean(K.relu(1.0 + y_pred))
-    loss = real_loss + fake_loss
-    return loss
-def hinge_loss_generator(y_true,y_pred):
-    fake_loss = -1*K.mean(y_pred)
-    return fake_loss
+
 def perceptual_loss_fine(y_true, y_pred):
     y_true = ((y_true + 1) / 2)#* 255.0
     y_pred = ((y_pred + 1) / 2)# * 255.0
