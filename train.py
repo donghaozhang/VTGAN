@@ -155,3 +155,69 @@ def train(d_model1, d_model2,g_global_model, g_local_model, gan_model, dataset, 
                  g_global_percp_hist, g_local_percp_hist, g_global_recon_hist, g_local_recon_hist, gan_hist,savedir=savedir)
     to_csv(d1_hist, d2_hist, d3_hist, d4_hist, d1_cls_hist,d2_cls_hist,ef1_hist1, ef2_hist, g_global_hist,g_local_hist, 
                  g_global_percp_hist, g_local_percp_hist, g_global_recon_hist, g_local_recon_hist, gan_hist,savedir=savedir)
+    
+    
+
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--epochs', type=int, default=100)
+    parser.add_argument('--batch_size', type=int, default=2)
+    parser.add_argument('--npz_file', type=str, default='vtgan', help='path/to/npz/file')
+    parser.add_argument('--input_dim', type=int, default=512)
+    parser.add_argument('--n_patch', type=int, default=64)
+    parser.add_argument('--savedir', type=str, required=False, help='path/to/save_directory',default='VTGAN')
+    parser.add_argument('--resume_training', type=str, required=False,  default='no', choices=['yes','no'])
+    args = parser.parse_args()
+    
+    K.clear_session()
+    gc.collect()
+    start_time = time.time()
+    dataset = load_real_data(args.npz_file+'.npz')
+    print('Loaded', dataset[0].shape, dataset[1].shape)
+    
+    
+    # define input shape based on the loaded dataset
+    in_size = args.input_dim
+    image_shape_coarse = (in_size//2,in_size//2,3)
+    label_shape_coarse = (in_size//2,in_size//2,1)
+
+
+    image_shape_fine = (in_size,in_size,3)
+    label_shape_fine = (in_size,in_size,1)
+    
+    image_shape_x_coarse = (in_size//2,in_size//2,64)
+    
+    ncf=64
+    nff=64
+    patch_size_fine= args.n_patch
+    patch_size_coarse= patch_size_fine//2
+    # define discriminator models
+    d_model1 = vit_discriminator(image_shape_fine,label_shape_fine, image_size = 512,projection_dim=64, patch_size_fine,
+                                 transformer_layers = 4, num_heads = 4, mlp_head_units = [128,64], activation='tanh', name='VT_fine')
+
+    d_model2 = vit_discriminator(image_shape_coarse,label_shape_coarse, image_size = 256, projection_dim=64, patch_size_coarse,
+                                 transformer_layers = 4, num_heads = 4, mlp_head_units = [128,64], activation='tanh', name='VT_coarse') 
+    
+    # define generator models
+    g_model_coarse = coarse_generator(image_shape_coarse,n_downsampling=2, n_blocks=9, ncf=ncf,n_channels=1)
+    g_model_fine = fine_generator(x_coarse_shape=image_shape_x_coarse,input_shape=image_shape_fine,nff=nff,n_blocks=3)
+    
+    if args.resume_training =='yes':
+        #weight_name_global = "global_model_000067.h5"
+        g_model_coarse.load_weights(weight_name_global)
+
+        #weight_name_local = "local_model_000067.h5"
+        g_model_fine.load_weights(weight_name_local)
+        
+    # define the composite model
+
+    vt_model = vtgan(g_model_fine,g_model_coarse, d_model1, d_model2, image_shape_fine,image_shape_coarse,image_shape_x_coarse,label_shape_fine,label_shape_coarse)
+    
+    train(d_model1, d_model2,  g_model_coarse, g_model_fine, vt_model, dataset, n_epochs=args.epochs, 
+          n_batch=args.batch_size, savedir=args.savedir, n_patch=[args.n_patch,args.n_patch])
+    
+    
+    end_time = time.time()
+    time_taken = (end_time-start_time)/3600.0
+    print(time_taken)
