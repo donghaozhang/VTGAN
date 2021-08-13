@@ -264,3 +264,58 @@ def create_vit_classifier(input_shape_fundus=(512, 512, 3),input_shape_angio= (5
     model.compile(loss=['mse','categorical_crossentropy',ef_loss], optimizer=Adam(lr=0.0002, beta_1=0.5, beta_2=0.999))
     model.summary()
     return model
+
+def vtgan(g_model_fine,g_model_coarse, d_model1, d_model2,image_shape_fine,image_shape_coarse,image_shape_x_coarse,label_shape_fine,label_shape_coarse): #d_model3, d_model4
+    # Discriminator NOT trainable
+    d_model1.trainable = False
+    d_model2.trainable = False
+
+    in_fine= Input(shape=image_shape_fine)
+    in_coarse = Input(shape=image_shape_coarse)
+    in_x_coarse = Input(shape=image_shape_x_coarse)
+
+    # Generators
+    gen_out_coarse, _ = g_model_coarse(in_coarse)
+    gen_out_fine = g_model_fine([in_fine,in_x_coarse])
+
+    # Discriminators Fine
+    dis_out_1_fake = d_model1([in_fine,gen_out_fine]) 
+
+    # Discriminators Coarse
+    dis_out_2_fake = d_model2([in_coarse, gen_out_coarse]) 
+
+
+    model = Model([in_fine,in_coarse,in_x_coarse],[dis_out_1_fake[0],
+                                                    dis_out_2_fake[0],
+                                                    dis_out_1_fake[1],
+                                                    dis_out_2_fake[1],
+                                                    dis_out_1_fake[2],
+                                                    dis_out_2_fake[2],
+                                                    gen_out_coarse,
+                                                    gen_out_fine,
+                                                    gen_out_coarse,
+                                                    gen_out_fine,
+                                                    gen_out_coarse,
+                                                    gen_out_fine
+                                                    ])
+
+    opt = Adam(lr=0.0002, beta_1=0.5)
+    model.compile(loss=['hinge', 
+                    'hinge',
+                    'categorical_crossentropy',
+                    'categorical_crossentropy',
+                    ef_loss,
+                    ef_loss,
+                    'hinge',
+                    'hinge',
+                    'mse',
+                    'mse',
+                    perceptual_loss_coarse,
+                    perceptual_loss_fine
+                    ], 
+              optimizer=opt,loss_weights=[1,1,10,10,
+                                          1,1,
+                                          10,10,10,10,10,10
+                                          ])
+    model.summary()
+    return model
