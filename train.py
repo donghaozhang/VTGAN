@@ -34,8 +34,6 @@ def train(d_model1, d_model2,g_global_model, g_local_model, gan_model, dataset, 
         for i in range(bat_per_epo):
           d_model1.trainable = True
           d_model2.trainable = True
-          #d_model3.trainable = True
-          #d_model4.trainable = True
           gan_model.trainable = False
           g_global_model.trainable = False
           g_local_model.trainable = False
@@ -62,15 +60,6 @@ def train(d_model1, d_model2,g_global_model, g_local_model, gan_model, dataset, 
               d_feat1_fake = d_model1.predict([X_realA,X_fakeB])
               d_loss2 = d_model1.train_on_batch([X_realA, X_fakeB] , [y1_fine,y2,d_feat1_fake[2]])[0] #[,X_fakeB]
 
-              #d_loss1 = 0.5*(d_loss1_real[0]+d_loss1_fake[0])
-
-              # update discriminator for real samples
-              #d_loss3 = d_model2.train_on_batch([X_realA, X_realB], y2)[0]
-              # update discriminator for generated samples
-              #d_loss4 = d_model2.train_on_batch([X_realA, X_fakeB], y2_fine)[0]
-              
-              #d_loss2 = 0.5*(d_loss2_real[0]+d_loss2_fake[0])
-
               ## COARSE DISCRIMINATOR  
               # update discriminator for real samples
 
@@ -80,29 +69,19 @@ def train(d_model1, d_model2,g_global_model, g_local_model, gan_model, dataset, 
               d_feat2_fake = d_model2.predict([X_realA_half,X_fakeB_half])
               d_loss4 = d_model2.train_on_batch([X_realA_half,X_fakeB_half],[y1_coarse,y2,d_feat2_fake[2]])[0] # [,X_fakeB_half]
 
-              #d_loss3 = 0.5*(d_loss3_real[0]+d_loss3_fake[0])
-
-              # update discriminator for real samples
-              #d_loss7 = d_model4.train_on_batch([X_realA_half, X_realB_half], y3)[0]
-              # update discriminator for generated samples
-              #d_loss8 = d_model4.train_on_batch([X_realA_half, X_fakeB_half], y2_coarse)[0]
-              
-              #d_loss4 = 0.5*(d_loss4_real[0]+d_loss4_fake[0])
           
-          #if n_steps%425 ==0:
+
 
           # turn Global G1 trainable
           d_model1.trainable = False
           d_model2.trainable = False
-          #d_model3.trainable = False
-          #d_model4.trainable = False
           gan_model.trainable = False
           g_global_model.trainable = True
           g_local_model.trainable = False
           
           
 
-          # select a batch of real samples for Local enhancer
+          # select a batch of real samples for Fine generator
           [X_realA, X_realB], _ = generate_real_data(dataset, n_batch, n_patch)
 
           # Global Generator image fake and real
@@ -111,7 +90,7 @@ def train(d_model1, d_model2,g_global_model, g_local_model, gan_model, dataset, 
           [X_fakeB_half, x_global], _ = generate_fake_data_coarse(g_global_model, X_realA_half, n_patch)
           
 
-          # update the global generator
+          # update the Coarse generator
           g_global_loss,_ = g_global_model.train_on_batch(X_realA_half, [X_realB_half,_])
 
           
@@ -123,20 +102,16 @@ def train(d_model1, d_model2,g_global_model, g_local_model, gan_model, dataset, 
           g_global_model.trainable = False
           g_local_model.trainable = True
           
-          # update the Local Enhancer 
+          # update the Fine generator 
           g_local_loss = g_local_model.train_on_batch([X_realA,x_global], X_realB)
           
 
-          # turn G1, G2 and GAN trainable, not D1,D2 and D3
+          # turn G1, G2 and GAN trainable, not D1,D2 
           d_model1.trainable = False
           d_model2.trainable = False
-          #d_model3.trainable = False
-          #d_model4.trainable = False
           gan_model.trainable = True
           g_global_model.trainable = True
           g_local_model.trainable = True
-          # update the generator
-          #,fm1_loss,fm2_loss,fm3_loss,fm4_loss
 
           d_feat1 = d_model1.predict([X_realA,X_realB])
           d_feat2 = d_model2.predict([X_realA_half,X_realB_half])
@@ -147,7 +122,7 @@ def train(d_model1, d_model2,g_global_model, g_local_model, gan_model, dataset, 
                                                                                                                                                       X_realB_half,X_realB
                                                                                                                                           ])
 
-          # summarize performance  
+          # print losses  
           print('>%d, d1[%.3f] d2[%.3f] d3[%.3f] d4[%.3f] ef1[%.3f] ef2[%.3f] g_g[%.3f] g_l[%.3f] g_g_r[%.3f] g_l_r[%.3f] g_g_p[%.3f] g_l_p[%.3f] gan[%.3f]' % 
                 (i+1, d_loss1, d_loss2, d_loss3, d_loss4,ef1_loss, ef2_loss, g_global_loss, g_local_loss, 
                 g_global_recon_loss, g_local_recon_loss, g_global_percp_loss, g_local_percp_loss, gan_loss))
@@ -167,9 +142,9 @@ def train(d_model1, d_model2,g_global_model, g_local_model, gan_model, dataset, 
           g_global_percp_hist.append(g_global_percp_loss)
           g_global_percp_hist.append(g_local_percp_loss)
           gan_hist.append(gan_loss)
-        # summarize model performance
         
-        #%if (i+1) % (bat_per_epo * 1) == 0:
+        # summarize model performance
+   
         summarize_performance_global(b, g_global_model, d_model1, dataset, n_samples=3,savedir=savedir)
         summarize_performance(b, g_global_model,g_local_model, d_model2, dataset, n_samples=3,savedir=savedir)
         b = b+1
