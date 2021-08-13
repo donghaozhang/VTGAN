@@ -214,7 +214,7 @@ def mlp(x, hidden_units, dropout_rate):
         x = layers.Dropout(dropout_rate)(x)
     return x
    
-def create_vit_classifier(input_shape_fundus=(512, 512, 3),input_shape_angio= (512, 512, 1),image_size = 512,projection_dim=4096, patch_size=64,transformer_layers = 8, num_heads = 4,
+def vit_discriminator(input_shape_fundus=(512, 512, 3),input_shape_angio= (512, 512, 1),image_size = 512,projection_dim=4096, patch_size=64,transformer_layers = 8, num_heads = 4,
                           mlp_head_units = [128,64], num_classes=2,activation='tanh', name='VTGAN'):
     num_patches = (image_size // patch_size) ** 2
     transformer_units = [projection_dim * 2,projection_dim] 
