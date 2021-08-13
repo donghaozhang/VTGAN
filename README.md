@@ -91,7 +91,7 @@ python3 convert_npz.py --outfile_name=vtgan --input_dim=512 --datadir=data --n_c
     '--input_dim', type=int, default=512
     '--n_crops', type=int, default=50
     '--datadir', type=str, required=True, help='path/to/data_directory',default='data'
-    '--outfile_name', type=str, default='attention2angio'
+    '--outfile_name', type=str, default='vtgan'
     '--n_images', type=int, default=17
 ```
 
@@ -104,13 +104,15 @@ python3 train.py --npz_file=vtgan --batch=2 --epochs=100 --savedir=VTGAN
 - There are different flags to choose from. Not all of them are mandatory
 
 ```
-   '--npz_file', type=str, default='attenton2angio', help='path/to/npz/file'
-   '--batch_size', type=int, default=2
-   '--input_dim', type=int, default=512
-   '--epochs', type=int, default=100
-   '--savedir', type=str, required=False, help='path/to/save_directory',default='VTGAN'
+    '--epochs', type=int, default=100
+    '--batch_size', type=int, default=2
+    '--npz_file', type=str, default='vtgan', help='path/to/npz/file'
+    '--input_dim', type=int, default=512
+    '--n_patch', type=int, default=64
+    '--savedir', type=str, required=False, help='path/to/save_directory',default='VTGAN'
+    '--resume_training', type=str, required=False,  default='no', choices=['yes','no']
 ```
 
 # License
-The code is released under the MIT License, you can read the license file included in the repository for details.
-## Work in Progress
+The code is released under the BSD 3-Clause License, you can read the license file included in the repository for details.
+
