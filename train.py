@@ -10,7 +10,7 @@ import keras.backend as K
 
 
 
-def train(d_model1, d_model2,g_global_model, g_local_model, gan_model, dataset, n_epochs=20, n_batch=1, savedir='AAGAN',n_patch=[64,32]): #
+def train(d_model1, d_model2,g_global_model, g_local_model, gan_model, dataset, n_epochs=20, n_batch=1, savedir='VTGAN',n_patch=[64,32]): #
     
     if not os.path.exists(savedir):
       os.makedirs(savedir)
