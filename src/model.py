@@ -4,7 +4,7 @@ from keras.layers import Input, Add, Concatenate, Lambda,LeakyReLU,AveragePoolin
 from keras.optimizers import Adam
 from keras.models import Model
 from keras.initializers import RandomNormal
-from losses import *
+from src.losses import *
 
 
 class ReflectionPadding2D(Layer):
